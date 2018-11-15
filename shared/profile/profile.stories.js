@@ -146,6 +146,7 @@ const props = {
   reason: '',
   refresh: Sb.action('refresh'),
   serverActive: false,
+  stellarAddress: 'coyne*keybase.io',
   trackerState: normal,
   waiting: false,
   youAreInTeams: false,

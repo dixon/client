@@ -96,6 +96,78 @@ const _ShowcasedTeamRow = (
 )
 const ShowcasedTeamRow = OverlayParentHOC(_ShowcasedTeamRow)
 
+type StellarAddressProps = {|
+  stellarAddress: string,
+  onSendLumens: () => void,
+  onRequestLumens: () => void,
+  onCopyAddress: () => void,
+  onWhatIsStellar: () => void,
+|}
+
+class _StellarFederatedAddress extends React.PureComponent<StellarAddressProps & OverlayParentProps> {
+  _menuItems = [
+    {
+      onClick: () => this.props.onSendLumens(),
+      title: 'Send Lumens (XLM)',
+    },
+    {
+      onClick: () => this.props.onRequestLumens(),
+      title: 'Request Lumens (XLM)',
+    },
+    {
+      onClick: () => this.props.onCopyAddress(),
+      title: 'Copy address',
+    },
+    {
+      onClick: () => this.props.onWhatIsStellar(),
+      title: 'What is Stellar?',
+    },
+  ]
+
+  render() {
+    return (
+      <Box2 direction="horizontal">
+        <Box style={styles.iconContainer}>
+          <Icon
+            style={styles.service}
+            color={Styles.globalColors.black_75}
+            textAlign="center"
+            type={'iconfont-identity-stellar'}
+            hint={'Stellar federated address'}
+            //onClick={() => onClickProfile(proof)}
+          />
+        </Box>
+        <Box style={styles.proofNameSection}>
+          <Box style={styles.proofNameLabelContainer}>
+            <Text
+              className="hover-underline-container"
+              type="Body"
+              onClick={this.props.toggleShowingMenu}
+              selectable={true}
+              style={styles.proofName}
+              ref={this.props.setAttachmentRef}
+            >
+              <Text inline={true} type="Body" className="hover-underline" style={styles.stellarAddressName}>
+                {this.props.stellarAddress}
+              </Text>
+              <FloatingMenu
+                attachTo={this.props.getAttachmentRef}
+                closeOnSelect={true}
+                items={this._menuItems}
+                onHidden={this.props.toggleShowingMenu}
+                visible={this.props.showingMenu}
+                position="bottom center"
+              />
+            </Text>
+            <Meta title="NEW" backgroundColor={Styles.globalColors.blue} style={{marginTop: 1}} />
+          </Box>
+        </Box>
+      </Box2>
+    )
+  }
+}
+const StellarFederatedAddress = Kb.OverlayParentHOC(_StellarFederatedAddress)
+
 class ProfileRender extends React.PureComponent<Props, State> {
   state: State = {
     searchHovered: false,
@@ -428,6 +500,7 @@ class ProfileRender extends React.PureComponent<Props, State> {
                     {...proofMenuContent}
                   />
                 )}
+                {this.props.stellarAddress && <StellarFederatedAddress />}
                 {!loading && <Folders profileUsername={this.props.username} />}
               </Box>
             </Box>
@@ -591,6 +664,51 @@ const styles = Styles.styleSheetCreate({
     minWidth: 196,
     maxWidth: 240,
   },
+  iconContainer: {
+    ...Styles.globalStyles.flexBoxRow,
+    alignItems: 'center',
+    height: 24,
+    minHeight: 24,
+    minWidth: 24,
+    width: 24,
+  },
+  proofName: Styles.platformStyles({
+    isElectron: {
+      ...Styles.desktopStyles.clickable,
+      display: 'inline-block',
+      wordBreak: 'break-all',
+      flex: 1,
+      transition: '0.15s color',
+    },
+  }),
+  proofNameSection: {
+    ...Styles.globalStyles.flexBoxRow,
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+    marginTop: 2,
+    flex: 1,
+  },
+  proofNameLabelContainer: {
+    ...Styles.globalStyles.flexBoxColumn,
+    flex: 1,
+  },
+  service: Styles.collapseStyles([
+    Styles.desktopStyles.clickable,
+    {
+      marginRight: Styles.globalMargins.tiny,
+      height: 16,
+      minHeight: 16,
+      minWidth: 16,
+      width: 16,
+      transition: '0.15s color',
+    },
+  ]),
+  stellarAddressName: Styles.platformStyles({
+    isElectron: {
+      color: Styles.globalColors.green,
+      ...Styles.desktopStyles.clickable,
+    },
+  }),
 })
 
 export default ProfileRender
